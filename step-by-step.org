@@ -1,0 +1,132 @@
+* DONE [2/2] Generate a skeletal Rails application
+  1. [X] Run the rails new command
+     #+BEGIN_SRC sh
+       rails new devise
+     #+END_SRC
+  2. [X] Enable a JavaScript runtime in [[file:../Gemfile][Gemfile]]
+       #+BEGIN_SRC conf
+         # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+         gem 'therubyracer', platforms: :ruby
+       #+END_SRC
+* DONE [4/4] Layout and Stylesheets
+** DONE Write a Navigation partial [[file:../app/views/layouts/_navigation.html.erb][app/views/layouts/_navigation.html.erb]]
+  #+BEGIN_SRC html
+    <%= link_to "Rails3 Devise Rspec Cucumber", root_path, :class => 'brand' %>
+    <ul class="nav">
+      <% if user_signed_in? %>
+      <li>
+        <%= link_to 'Logout', destroy_user_session_path, :method=>'delete' %>
+      </li>
+      <% else %>
+      <li>
+        <%= link_to 'Login', new_user_session_path %>
+      </li>
+      <% end %>
+      <% if user_signed_in? %>
+      <li>
+        <%= link_to 'Edit account', edit_user_registration_path %>
+      </li>
+      <% else %>
+      <li>
+        <%= link_to 'Sign up', new_user_registration_path %>
+      </li>
+      <% end %>
+    </ul>
+  #+END_SRC
+  
+
+** DONE Create a partial for flash messages [[file:../app/views/layouts/_messages.html.erb][app/views/layouts/_messages.html.erb]]
+  #+BEGIN_SRC html
+    <% flash.each do |name, msg| %>
+      <% if msg.is_a?(String) %>
+        <%= content_tag :div, msg, :id => "flash_#{name}" %>
+      <% end %>
+    <% end %>  
+  #+END_SRC
+** DONE [2/2] Enhance CSS Styling
+  1. [X] Rename the application.css to application.css.scss in app/assets/stylesheets/ directory
+     #+BEGIN_SRC sh
+     cd app/assets/stylesheets/ && mv -v application.css application.css.scss
+     #+END_SRC
+  2. [X] Apply simple CSS styling for your navigation links and flash messages in [[file:/ssh:usahealthscience.com:/home/troy/srv/devise/128/devise/app/assets/stylesheets/application.css.scss][application.css.scss]]
+     #+BEGIN_SRC css
+       .brand {
+         float: left;
+         padding-right: 8px;
+       }
+       ul.nav {
+         list-style: none;
+         margin: 0 0 2em;
+         padding: 0;
+       }
+       ul.nav li {
+         display: inline;
+       }
+       #flash_notice, #flash_alert {
+         padding: 5px 8px;
+         margin: 10px 0;
+       }
+       #flash_notice {
+         background-color: #CFC;
+         border: solid 1px #6C6;
+       }
+       #flash_alert {
+         background-color: #FCC;
+         border: solid 1px #C66;
+       }     
+     #+END_SRC
+** DONE Default Application Layout [[file:../app/views/layouts/application.html.erb][application.html.erb]]
+   #+BEGIN_SRC html
+     <!DOCTYPE html>
+     <html>
+       <head>
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title><%= content_for?(:title) ? yield(:title) : "Rails3 Devise Rspec Cucumber" %></title>
+         <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Rails3 Devise Rspec Cucumber" %>">
+         <%= stylesheet_link_tag "application", :media => "all" %>
+         <%= javascript_include_tag "application" %>
+         <%= csrf_meta_tags %>
+         <%= yield(:head) %>
+       </head>
+       <body class="<%= controller_name %> <%= action_name %>">
+         <div id="container" class="container">
+           <header>
+             <%= render 'layouts/navigation' %>
+             <%= render 'layouts/messages' %>
+           </header>
+           <div id="main" role="main">
+             <%= yield %>
+           </div>
+           <footer>
+           </footer>
+         </div> <!--! end of #container -->
+       </body>
+     </html>   
+   #+END_SRC
+   
+* TODO [0/0] Authentication
+  1. [3/5] Set Up Configuration for Devise
+     1. [X] Add devise to [[file:../Gemfile][Gemfile]]
+	#+BEGIN_SRC conf
+	  gem 'devise'
+	#+END_SRC
+     2. [X] Run the generator to install Devise
+	#+BEGIN_SRC sh
+	  rails generate devise:install
+	#+END_SRC
+     3. [ ] Configure Devise for Email
+     4. [X] Generate a Model and Routes for Users
+	#+BEGIN_SRC sh
+          rails generate devise User
+	#+END_SRC
+     5. [ ] Prevent Logging of Passwords
+* TODO [/] Authorization
+  1. [ ] Migrate the database
+     #+BEGIN_SRC sh
+       rake db:migrate
+     #+END_SRC
+* Reference
+  - This step by step was adapted from
+    http://railsapps.github.io/tutorial-rails-devise-rspec-cucumber.html
+    by Daniel Kehoe
+  - 
